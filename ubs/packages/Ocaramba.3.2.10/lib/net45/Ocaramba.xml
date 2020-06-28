@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Ocaramba</name>
+    </assembly>
+    <members>
+        <member name="T:Ocaramba.Helpers.MdxHelper">
+            <summary>
+            Class is used for execution MDX queries and reading data from Analysis Services.
+            </summary>
+        </member>
+        <member name="F:Ocaramba.Helpers.MdxHelper.Logger">
+            <summary>
+            NLog logger handle.
+            </summary>
+        </member>
+        <member name="M:Ocaramba.Helpers.MdxHelper.ExecuteMdxCommand(System.String,System.String,System.Int32)">
+            <summary>
+            Method is used for execution MDX query and reading each row from column.
+            </summary>
+            <param name="command">MDX query string.</param>
+            <param name="connectionString">The Analysis Services connection string.</param>
+            <param name="index">The index of column.</param>
+            <returns>Collection of MDX query results.</returns>
+            <example>How to use it: <code>
+            var connectionString = "Provider=MSOLAP.5;Password=password;Persist Security Info=True;User ID=username;Initial Catalog=AdventureWorks;Data Source=servername;MDX Compatibility=1;Safety Options=2;MDX Missing Member Mode=Error";
+            const string SqlQuery = "Select [Measures].[Internet Average Sales Amount] on Columns, [Product].[Category].members on Rows From [AdventureWorks];";
+            ICollection&lt;string&gt; result = MdxHelper.ExecuteMdxCommand(mdxQuery, connectionString, 1);
+            </code></example>
+        </member>
+        <member name="T:Ocaramba.Helpers.SqlHelper">
+            <summary>
+            Class is used for execution SQL queries and reading data from database.
+            </summary>
+        </member>
+        <member name="F:Ocaramba.Helpers.SqlHelper.Logger">
+            <summary>
+            NLog logger handle.
+            </summary>
+        </member>
+        <member name="M:Ocaramba.Helpers.SqlHelper.ExecuteSqlCommand(System.String,System.String,System.String)">
+            <summary>
+            Method is used for execution SQL query (select) and reading each row from column.
+            </summary>
+            <param name="command">SQL query.</param>
+            <param name="connectionString">Server, user, pass.</param>
+            <param name="column">Name of column.</param>
+            <returns>
+            Collection of each row existed in column.
+            </returns>
+            <example>How to use it: <code>
+            var connectionString = "User ID=sqluser;Password=sqluserpassword;server=servername;";
+            const string ColumnName = "AccountNumber";
+            const string SqlQuery = "SELECT  AccountNumber as " + ColumnName + " FROM [AdventureWorks].[Sales].[Customer] where [CustomerID] in (1, 2)";
+            var result = SqlHelper.ExecuteSqlCommand(SqlQuery, connectionString, ColumnName);
+            </code></example>
+        </member>
+        <member name="M:Ocaramba.Helpers.SqlHelper.ExecuteSqlCommand(System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Method is used for execution SQL query (select) and reading each column from row.
+            </summary>
+            <param name="command">SQL query.</param>
+            <param name="connectionString">Server, user, pass.</param>
+            <param name="columns">Name of columns.</param>
+            <returns>
+            Dictionary of each column existed in raw.
+            </returns>
+            <example>How to use it: <code>
+            var connectionString = "User ID=sqluser;Password=sqluserpassword;server=servername;";
+            ICollection&lt;string&gt; column = new List&lt;string&gt;();
+            column.Add("NationalIDNumber");
+            column.Add("ContactID");
+            const string SqlQuery = "SELECT [NationalIDNumber] as " + column.ElementAt(0) + " , [ContactID] as " + column.ElementAt(1) + " from [AdventureWorks].[HumanResources].[Employee] where EmployeeID=1";
+            Dictionary&lt;string, string&gt; results = SqlHelper.ExecuteSqlCommand(command, GetConnectionString(server), column);
+            </code></example>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">Exception when there is not given column in results from SQL query.</exception>
+        </member>
+    </members>
+</doc>

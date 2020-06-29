@@ -4,6 +4,8 @@ using System.Windows.Forms.VisualStyles;
 using Ocaramba;
 using Ocaramba.Extensions;
 using Ocaramba.Types;
+using OpenQA.Selenium.Support.UI;
+using ubs.Helper;
 
 namespace ubs.PageObjects
 {
@@ -52,11 +54,12 @@ namespace ubs.PageObjects
 		
 		public LoginPageObjects ClickOnAgreeToAllPrivacySettings()
 		{
+			Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
 			Driver.SwitchTo()
 				.Frame(Driver.GetElement(new ElementLocator(Locator.XPath, "//iframe[@class='cboxIframe']")));
-
 			
-			Driver.GetElement(_agreeToAllButtonLocator,5).Click();
+			Driver.TryToClick(_agreeToAllButtonLocator,5);
 
 			return this;
 		}		
